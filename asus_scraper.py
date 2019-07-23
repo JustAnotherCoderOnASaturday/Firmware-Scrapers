@@ -20,7 +20,9 @@ class AsusSpider(Spider):
     def parse(self, response):
         print("REEEEEEEEEEEEEEEEEEEEEEEEEE")
         if "cid" not in response.meta:
+            print("a")
             for category in response.xpath("//div[@class='product-category']//a/@l1_id").extract():
+                print("TeeHee" + self.region + " " + category)
                 yield Request(
                     url=urllib.parse.urljoin(response.url, "/support/utilities/GetProducts.aspx?ln=%s&p=%s" % (self.region, category)),
                     meta={"cid": category},
@@ -29,6 +31,7 @@ class AsusSpider(Spider):
                     callback=self.parse)
 
         elif "sid" not in response.meta:
+            print("b")
             for series in response.xpath("//table/id/text()").extract():
                 yield Request(
                     url=urllib.parse.urljoin(response.url, "/support/utilities/GetProducts.aspx?ln=%s&p=%s&s=%s" % (self.region, response.meta["cid"], series)),
@@ -38,6 +41,7 @@ class AsusSpider(Spider):
                     callback=self.parse)
 
         elif "product" not in response.meta:
+            print("c")
             for prod in response.xpath("//table"):
                 pid = prod.xpath("./l3_id/text()").extract()[0]
                 product = prod.xpath("./m_name/text()").extract()[0]
@@ -50,6 +54,7 @@ class AsusSpider(Spider):
                     headers={"Referer": response.url,
                              "X-Requested-With": "XMLHttpRequest"},
                     callback=self.parse_product)
+        print("AFTERRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRR")
 
     def parse_product(self, response):
         print("--------------------------")

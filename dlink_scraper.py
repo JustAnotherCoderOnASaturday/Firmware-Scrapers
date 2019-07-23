@@ -12,29 +12,6 @@ websiteOfProducts = 'https://support.dlink.com/ProductInfo.aspx?m='
 allProductsSite = 'https://dlinkmea.com/index.php/site/allproducts?page='
 pages = 35
 
-# def isAsciiChar(c):
-#     if ord(c)==45 or 47<ord(c)<58 or 64<ord(c)<91:
-#         return True
-#     return False
-#
-# def getAllPossibleDevices(file):
-#     '''Will get all possible devices from the all products size'''
-#     f = open(file, "w+")
-#     for x in range(1, pages):
-#         response = get( allProductsSite + str(x) )
-#         soup = BeautifulSoup(response.text, 'html.parser')
-#
-#         for em in soup.find_all('em'):
-#             em_str = str(em)
-#             item = ''
-#             for c in em_str[4:]:
-#                 if not (isAsciiChar(c) ):
-#                     break
-#                 item += c
-#
-#             f.write(item + '\n')
-#     f.close()
-
 def getDevicesImproved():
     site = 'https://support.dlink.com/AllPro.aspx'
     f = open('all_products.txt', 'w')
@@ -93,7 +70,6 @@ def getValues(device):
         return []
 
 def _download(json, value_ver, device):
-    MAX = 2   # Can adjust this number
     try:
         for i in range(0, len(json['item'][0]['file']) ):
             if json['item'][0]['file'][i]['filetypename'] == 'Firmware':
@@ -105,10 +81,7 @@ def _download(json, value_ver, device):
                     with open('firmwares/' + device + "__" + value_ver+ '__' + json['item'][0]['file'][i]['name']+ '.zip' , 'wb') as f:
                         shutil.copyfileobj(r, f)
 
-                MAX -= 1
                 print("[+] Successfully Downloaded: " + dwnld)
-                if MAX==0:
-                    break
                 continue
     except:
         print("[-] Download went wrong")
